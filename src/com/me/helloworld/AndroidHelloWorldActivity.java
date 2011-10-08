@@ -3,9 +3,12 @@ package com.me.helloworld;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,13 +25,14 @@ import winterwell.jtwitter.*;
 
 
 public class AndroidHelloWorldActivity extends Activity implements OnClickListener,
-	TextWatcher {
+	TextWatcher, OnSharedPreferenceChangeListener {
     
 	private static final String TAG = "StatusActivity";
 	EditText editText;
 	Button updateButton;
 	Twitter twitter;
 	TextView textCount;
+	SharedPreferences prefs;
 	
 	/** Called when the activity is first created. */
     @Override
@@ -49,11 +53,37 @@ public class AndroidHelloWorldActivity extends Activity implements OnClickListen
     
     twitter = new Twitter("student","password");
     twitter.setAPIRootUrl("http://yamba.marakana.com/api");
+    
+    // Setup preferences
+    prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    prefs.registerOnSharedPreferenceChangeListener(this);
     }
     
     public void onClick(View v){
-    	twitter.setStatus(editText.getText().toString());
-    	Log.d(TAG, "onClicked");
+    	
+    	// Update twitter status
+    	try {
+    		getTwitter().setStatus(editText.getText().toString());
+    	} catch (TwitterException e){
+    		Log.d(TAG, "Twitter setStatus failed: "+ e);
+    	}
+    	
+    	//twitter.setStatus(editText.getText().toString());
+    	//Log.d(TAG, "onClicked");
+    }
+    
+    private Twitter getTwitter(){
+    	if(twitter == null){
+    		String username, password, apiRoot;
+    		username = prefs.getString("username", "");
+    		password = prefs.getString("password", "");
+    		apiRoot = prefs.getString("apiRoot", "http://yamba.marakana.com/api");
+    		
+    		// Connect to twitter.com
+    		twitter = new Twitter(username,password);
+    		twitter.setAPIRootUrl(apiRoot);    		
+    	}
+    	return twitter;
     }
     
     // Asynchronously posts to twitter
@@ -120,5 +150,12 @@ public class AndroidHelloWorldActivity extends Activity implements OnClickListen
     }
     return true; //
     }
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences prefs,
+			String key) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
