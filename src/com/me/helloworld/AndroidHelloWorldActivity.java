@@ -154,7 +154,8 @@ public class AndroidHelloWorldActivity extends Activity implements OnClickListen
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences prefs,
 			String key) {
-		// TODO Auto-generated method stub
+		// invalidate twitter
+		twitter = null;
 		
 	}
 
