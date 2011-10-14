@@ -51,8 +51,8 @@ public class AndroidHelloWorldActivity extends Activity implements OnClickListen
     textCount.setTextColor(Color.GREEN);
     editText.addTextChangedListener(this);
     
-    twitter = new Twitter("student","password");
-    twitter.setAPIRootUrl("http://yamba.marakana.com/api");
+    //twitter = new Twitter("student","password");
+    //twitter.setAPIRootUrl("http://yamba.marakana.com/api");
     
     // Setup preferences
     prefs = PreferenceManager.getDefaultSharedPreferences(this);
